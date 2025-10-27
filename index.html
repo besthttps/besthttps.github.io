@@ -35,28 +35,46 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
             position: relative;
-            overflow-x: hidden;
+            overflow: hidden;
         }
         
-        body::before {
-            content: '';
-            position: absolute;
+        /* Контейнер для нейронной сети */
+        #neural-network {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(42, 171, 238, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(42, 171, 238, 0.1) 0%, transparent 20%);
             z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .node {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            box-shadow: 0 0 15px var(--accent);
+            animation: pulse 4s infinite ease-in-out;
+        }
+        
+        .connection {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
+            transform-origin: 0 0;
+            box-shadow: 0 0 8px var(--accent);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
         
         .container {
             max-width: 480px;
             width: 100%;
-            background-color: var(--bg-secondary);
+            background-color: rgba(26, 26, 26, 0.8);
             border-radius: 24px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -308,6 +326,8 @@
     </style>
 </head>
 <body>
+    <div id="neural-network"></div>
+    
     <div class="container">
         <div class="header">
             <h1>BESTHTTPS в Telegram</h1>
@@ -338,5 +358,141 @@
             <p>besthttps</p>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const neuralNetwork = document.getElementById('neural-network');
+            const nodes = [];
+            const connections = [];
+            
+            // Создаем узлы нейронной сети
+            for (let i = 0; i < 25; i++) {
+                const node = document.createElement('div');
+                node.className = 'node';
+                
+                // Случайные позиции
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Случайные размеры
+                const size = 3 + Math.random() * 7;
+                
+                node.style.width = `${size}px`;
+                node.style.height = `${size}px`;
+                node.style.left = `${x}%`;
+                node.style.top = `${y}%`;
+                
+                // Случайная задержка анимации
+                node.style.animationDelay = `${Math.random() * 4}s`;
+                
+                neuralNetwork.appendChild(node);
+                nodes.push({ element: node, x, y });
+            }
+            
+            // Создаем соединения между узлами
+            nodes.forEach((node, index) => {
+                // Создаем соединения с несколькими случайными узлами
+                const numConnections = 2 + Math.floor(Math.random() * 3);
+                
+                for (let i = 0; i < numConnections; i++) {
+                    const targetIndex = Math.floor(Math.random() * nodes.length);
+                    if (targetIndex !== index) {
+                        const targetNode = nodes[targetIndex];
+                        
+                        // Вычисляем расстояние между узлами
+                        const dx = targetNode.x - node.x;
+                        const dy = targetNode.y - node.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Создаем соединение только если узлы достаточно близко
+                        if (distance < 40) {
+                            const connection = document.createElement('div');
+                            connection.className = 'connection';
+                            
+                            // Позиционируем соединение
+                            connection.style.width = `${distance}%`;
+                            connection.style.left = `${node.x}%`;
+                            connection.style.top = `${node.y}%`;
+                            
+                            // Вычисляем угол поворота
+                            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                            connection.style.transform = `rotate(${angle}deg)`;
+                            
+                            // Случайная прозрачность
+                            connection.style.opacity = 0.2 + Math.random() * 0.3;
+                            
+                            neuralNetwork.appendChild(connection);
+                            connections.push(connection);
+                        }
+                    }
+                }
+            });
+            
+            // Анимация движения узлов
+            function animateNodes() {
+                nodes.forEach(node => {
+                    // Случайное небольшое изменение позиции
+                    const dx = (Math.random() - 0.5) * 0.5;
+                    const dy = (Math.random() - 0.5) * 0.5;
+                    
+                    // Обновляем позицию
+                    node.x = Math.max(0, Math.min(100, node.x + dx));
+                    node.y = Math.max(0, Math.min(100, node.y + dy));
+                    
+                    // Применяем новую позицию
+                    node.element.style.left = `${node.x}%`;
+                    node.element.style.top = `${node.y}%`;
+                });
+                
+                // Обновляем соединения
+                updateConnections();
+                
+                requestAnimationFrame(animateNodes);
+            }
+            
+            // Обновление соединений между узлами
+            function updateConnections() {
+                // Удаляем старые соединения
+                connections.forEach(conn => neuralNetwork.removeChild(conn));
+                connections.length = 0;
+                
+                // Создаем новые соединения
+                nodes.forEach((node, index) => {
+                    const numConnections = 2 + Math.floor(Math.random() * 3);
+                    
+                    for (let i = 0; i < numConnections; i++) {
+                        const targetIndex = Math.floor(Math.random() * nodes.length);
+                        if (targetIndex !== index) {
+                            const targetNode = nodes[targetIndex];
+                            
+                            const dx = targetNode.x - node.x;
+                            const dy = targetNode.y - node.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < 40) {
+                                const connection = document.createElement('div');
+                                connection.className = 'connection';
+                                
+                                connection.style.width = `${distance}%`;
+                                connection.style.left = `${node.x}%`;
+                                connection.style.top = `${node.y}%`;
+                                
+                                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                                connection.style.transform = `rotate(${angle}deg)`;
+                                
+                                connection.style.opacity = 0.2 + Math.random() * 0.3;
+                                
+                                neuralNetwork.appendChild(connection);
+                                connections.push(connection);
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Запускаем анимацию
+            animateNodes();
+        });
+    </script>
 </body>
 </html>
