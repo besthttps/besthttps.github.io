@@ -6,23 +6,24 @@
     <title>BESTHTTPS | Telegram</title>
     <style>
         :root {
-            --bg-primary: #0f0f0f;
-            --bg-secondary: #1a1a1a;
-            --bg-hover: #252525;
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-hover: #111111;
             --text-primary: #ffffff;
-            --text-secondary: #a8a8a8;
-            --accent: #2aabee;
-            --accent-hover: #2295d0;
-            --border: #2a2a2a;
-            --gradient-start: #2aabee;
-            --gradient-end: #1e5799;
+            --text-secondary: #cccccc;
+            --accent: #ffffff;
+            --accent-hover: #e6e6e6;
+            --border: #222222;
+            --success: #00ff00;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Courier New', monospace;
         }
         
         body {
@@ -35,51 +36,46 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            position: relative;
-            overflow: hidden;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            overflow-x: hidden;
         }
         
-        /* Контейнер для нейронной сети */
-        #neural-network {
+        /* Анимированный фон с цифровым дождем */
+        .matrix-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.7;
+            opacity: 0.1;
+            pointer-events: none;
         }
         
-        .node {
+        .matrix-column {
             position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-            box-shadow: 0 0 15px var(--accent);
-            animation: pulse 4s infinite ease-in-out;
+            top: -100px;
+            color: #00ff00;
+            font-size: 18px;
+            animation: matrix-rain 15s linear infinite;
         }
         
-        .connection {
-            position: absolute;
-            height: 1px;
-            background: linear-gradient(to right, transparent, var(--accent), transparent);
-            transform-origin: 0 0;
-            box-shadow: 0 0 8px var(--accent);
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
+        @keyframes matrix-rain {
+            0% { transform: translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
         }
         
         .container {
-            max-width: 480px;
+            max-width: 520px;
             width: 100%;
-            background-color: rgba(26, 26, 26, 0.8);
-            border-radius: 24px;
+            background-color: rgba(10, 10, 10, 0.9);
+            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow), 0 0 15px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
             position: relative;
             z-index: 1;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -87,15 +83,16 @@
         
         .container:hover {
             transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.2);
         }
         
         .header {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            padding: 50px 30px;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            padding: 40px 30px;
             text-align: center;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid var(--border);
         }
         
         .header::before {
@@ -106,36 +103,50 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+                radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
         }
         
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+        .header-content {
+            position: relative;
+            z-index: 2;
         }
         
         .header h1 {
             font-size: 32px;
             margin-bottom: 12px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             position: relative;
-            z-index: 1;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--text-primary);
+            box-shadow: var(--glow);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+        }
+        
+        .container:hover .header h1::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
         
         .header p {
             font-size: 16px;
-            opacity: 0.9;
-            font-weight: 400;
-            position: relative;
-            z-index: 1;
+            opacity: 0.8;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
         
         .content {
@@ -147,10 +158,10 @@
             align-items: center;
             margin-bottom: 40px;
             padding: 25px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(20, 20, 20, 0.7);
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -172,45 +183,86 @@
         
         .profile:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
         }
         
         .avatar {
             width: 70px;
             height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 4px;
+            background: linear-gradient(135deg, #1a1a1a, #333333);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
             color: white;
             margin-right: 20px;
             font-weight: 700;
-            box-shadow: 0 5px 15px rgba(42, 171, 238, 0.3);
-            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .avatar::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
         
         .profile:hover .avatar {
             transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile:hover .avatar::after {
+            opacity: 1;
         }
         
         .profile-info h2 {
             font-size: 22px;
-            margin-bottom: 6px;
-            font-weight: 600;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 1px;
         }
         
         .profile-info p {
             font-size: 15px;
             color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            margin-right: 8px;
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         .buttons {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
         
         .btn {
@@ -218,16 +270,18 @@
             align-items: center;
             justify-content: center;
             padding: 18px 24px;
-            border-radius: 14px;
+            border-radius: 4px;
             text-decoration: none;
             font-weight: 600;
             font-size: 16px;
-            transition: all 0.3s ease;
-            border: none;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
             position: relative;
             overflow: hidden;
             z-index: 1;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
         
         .btn::before {
@@ -237,10 +291,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: rgba(255, 255, 255, 0.1);
             z-index: -1;
-            transition: opacity 0.3s ease;
-            opacity: 1;
+            transition: all 0.4s ease;
+            transform: scaleX(0);
+            transform-origin: left;
         }
         
         .btn::after {
@@ -250,9 +305,13 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.7s;
             z-index: -1;
+        }
+        
+        .btn:hover::before {
+            transform: scaleX(1);
         }
         
         .btn:hover::after {
@@ -261,48 +320,66 @@
         
         .btn-primary {
             color: white;
-            box-shadow: 0 5px 15px rgba(42, 171, 238, 0.3);
+            background: rgba(20, 20, 20, 0.8);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
         
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(42, 171, 238, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
         }
         
-        .btn-secondary {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-            color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-secondary::before {
-            opacity: 0;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.15);
+        .btn-icon {
+            margin-right: 10px;
+            font-size: 18px;
         }
         
         .footer {
             text-align: center;
             padding: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border);
             color: var(--text-secondary);
             font-size: 14px;
-            opacity: 0.7;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(5, 5, 5, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
         
         @media (max-width: 480px) {
             .container {
-                border-radius: 16px;
+                border-radius: 6px;
             }
             
             .header {
-                padding: 40px 20px;
+                padding: 30px 20px;
             }
             
             .header h1 {
@@ -322,176 +399,83 @@
                 margin-right: 0;
                 margin-bottom: 15px;
             }
+            
+            .btn {
+                padding: 16px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="neural-network"></div>
+    <div class="matrix-bg" id="matrixBg"></div>
     
     <div class="container">
         <div class="header">
-            <h1>BESTHTTPS в Telegram</h1>
-            <p>Переход к профилю и каналу</p>
+            <div class="header-content">
+                <h1>BESTHTTPS</h1>
+                <p>TELEGRAM ACCESS POINT</p>
+            </div>
         </div>
         
         <div class="content">
             <div class="profile">
                 <div class="avatar">B</div>
                 <div class="profile-info">
-                    <h2>@besthttps</h2>
-                    <p>Профиль Telegram</p>
+                    <h2>@BESTHTTPS</h2>
+                    <p><span class="status-indicator"></span>PROFILE ACTIVE</p>
                 </div>
             </div>
             
             <div class="buttons">
                 <a href="https://t.me/besthttps" class="btn btn-primary" target="_blank">
-                    Перейти к профилю
+                    <span class="btn-icon">></span> ACCESS PROFILE
                 </a>
                 
                 <a href="https://t.me/besthttpsNFT" class="btn btn-primary" target="_blank">
-                    Перейти к каналу про крипту и NFT
+                    <span class="btn-icon">></span> CRYPTO & NFT CHANNEL
                 </a>
             </div>
         </div>
         
         <div class="footer">
-            <p>besthttps</p>
+            <p>SYSTEM: ONLINE</p>
+            <div class="social-links">
+                <a href="#" class="social-link">T</a>
+                <a href="#" class="social-link">C</a>
+                <a href="#" class="social-link">N</a>
+            </div>
         </div>
     </div>
 
     <script>
+        // Создаем эффект матричного дождя на фоне
         document.addEventListener('DOMContentLoaded', function() {
-            const neuralNetwork = document.getElementById('neural-network');
-            const nodes = [];
-            const connections = [];
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01';
             
-            // Создаем узлы нейронной сети
-            for (let i = 0; i < 25; i++) {
-                const node = document.createElement('div');
-                node.className = 'node';
+            // Создаем колонки с падающими символами
+            for (let i = 0; i < 50; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
                 
-                // Случайные позиции
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                
-                // Случайные размеры
-                const size = 3 + Math.random() * 7;
-                
-                node.style.width = `${size}px`;
-                node.style.height = `${size}px`;
-                node.style.left = `${x}%`;
-                node.style.top = `${y}%`;
+                // Случайная позиция по горизонтали
+                column.style.left = `${Math.random() * 100}%`;
                 
                 // Случайная задержка анимации
-                node.style.animationDelay = `${Math.random() * 4}s`;
+                column.style.animationDelay = `${Math.random() * 15}s`;
                 
-                neuralNetwork.appendChild(node);
-                nodes.push({ element: node, x, y });
-            }
-            
-            // Создаем соединения между узлами
-            nodes.forEach((node, index) => {
-                // Создаем соединения с несколькими случайными узлами
-                const numConnections = 2 + Math.floor(Math.random() * 3);
+                // Случайная скорость
+                column.style.animationDuration = `${10 + Math.random() * 10}s`;
                 
-                for (let i = 0; i < numConnections; i++) {
-                    const targetIndex = Math.floor(Math.random() * nodes.length);
-                    if (targetIndex !== index) {
-                        const targetNode = nodes[targetIndex];
-                        
-                        // Вычисляем расстояние между узлами
-                        const dx = targetNode.x - node.x;
-                        const dy = targetNode.y - node.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        // Создаем соединение только если узлы достаточно близко
-                        if (distance < 40) {
-                            const connection = document.createElement('div');
-                            connection.className = 'connection';
-                            
-                            // Позиционируем соединение
-                            connection.style.width = `${distance}%`;
-                            connection.style.left = `${node.x}%`;
-                            connection.style.top = `${node.y}%`;
-                            
-                            // Вычисляем угол поворота
-                            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                            connection.style.transform = `rotate(${angle}deg)`;
-                            
-                            // Случайная прозрачность
-                            connection.style.opacity = 0.2 + Math.random() * 0.3;
-                            
-                            neuralNetwork.appendChild(connection);
-                            connections.push(connection);
-                        }
-                    }
+                // Добавляем случайные символы
+                let content = '';
+                for (let j = 0; j < 20; j++) {
+                    content += chars.charAt(Math.floor(Math.random() * chars.length)) + '<br>';
                 }
-            });
-            
-            // Анимация движения узлов
-            function animateNodes() {
-                nodes.forEach(node => {
-                    // Случайное небольшое изменение позиции
-                    const dx = (Math.random() - 0.5) * 0.5;
-                    const dy = (Math.random() - 0.5) * 0.5;
-                    
-                    // Обновляем позицию
-                    node.x = Math.max(0, Math.min(100, node.x + dx));
-                    node.y = Math.max(0, Math.min(100, node.y + dy));
-                    
-                    // Применяем новую позицию
-                    node.element.style.left = `${node.x}%`;
-                    node.element.style.top = `${node.y}%`;
-                });
+                column.innerHTML = content;
                 
-                // Обновляем соединения
-                updateConnections();
-                
-                requestAnimationFrame(animateNodes);
+                matrixBg.appendChild(column);
             }
-            
-            // Обновление соединений между узлами
-            function updateConnections() {
-                // Удаляем старые соединения
-                connections.forEach(conn => neuralNetwork.removeChild(conn));
-                connections.length = 0;
-                
-                // Создаем новые соединения
-                nodes.forEach((node, index) => {
-                    const numConnections = 2 + Math.floor(Math.random() * 3);
-                    
-                    for (let i = 0; i < numConnections; i++) {
-                        const targetIndex = Math.floor(Math.random() * nodes.length);
-                        if (targetIndex !== index) {
-                            const targetNode = nodes[targetIndex];
-                            
-                            const dx = targetNode.x - node.x;
-                            const dy = targetNode.y - node.y;
-                            const distance = Math.sqrt(dx * dx + dy * dy);
-                            
-                            if (distance < 40) {
-                                const connection = document.createElement('div');
-                                connection.className = 'connection';
-                                
-                                connection.style.width = `${distance}%`;
-                                connection.style.left = `${node.x}%`;
-                                connection.style.top = `${node.y}%`;
-                                
-                                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                                connection.style.transform = `rotate(${angle}deg)`;
-                                
-                                connection.style.opacity = 0.2 + Math.random() * 0.3;
-                                
-                                neuralNetwork.appendChild(connection);
-                                connections.push(connection);
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Запускаем анимацию
-            animateNodes();
         });
     </script>
 </body>
